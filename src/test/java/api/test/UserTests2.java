@@ -1,6 +1,6 @@
 package api.test;
 
-import api.endpoints.UserEndPoints;
+import api.endpoints.UserEndPoints2;
 import api.payload.User;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
@@ -11,7 +11,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-public class UserTests {
+public class UserTests2 {
 
         Faker faker;
         User userPayload;
@@ -36,7 +36,7 @@ public class UserTests {
         @Test(priority = 1)
         public void testPostUser()
         {
-            Response response=UserEndPoints.createUser(userPayload);
+            Response response=UserEndPoints2.createUser(userPayload);
             response.then().log().all();
             Assert.assertEquals(response.getStatusCode(),200);
 
@@ -45,7 +45,7 @@ public class UserTests {
          @Test(priority = 2)
         public void testGetUserByName()
         {
-            Response response=UserEndPoints.readUser(this.userPayload.getUsername());
+            Response response=UserEndPoints2.readUser(this.userPayload.getUsername());
             response.then().log().all();
             Assert.assertEquals(response.getStatusCode(),200);
 
@@ -56,12 +56,12 @@ public class UserTests {
         {
 
             userPayload.setUsername(faker.name().username());
-        Response response=UserEndPoints.updateUser(userPayload,this.userPayload.getUsername());
+        Response response=UserEndPoints2.updateUser(userPayload,this.userPayload.getUsername());
         response.then().log().all();
         Assert.assertEquals(response.getStatusCode(),200);
 
         //Checking if the updated data is reflected
-            Response response2=UserEndPoints.readUser(this.userPayload.getUsername());
+            Response response2=UserEndPoints2.readUser(this.userPayload.getUsername());
             Assert.assertEquals(response2.getStatusCode(),200);
 
 
@@ -70,7 +70,7 @@ public class UserTests {
     @Test(priority = 4)
     public void testDeleteUser()
     {
-        Response response=UserEndPoints.deleteUser(this.userPayload.getUsername());
+        Response response=UserEndPoints2.deleteUser(this.userPayload.getUsername());
         response.then().log().all();
         Assert.assertEquals(response.getStatusCode(),200);
 

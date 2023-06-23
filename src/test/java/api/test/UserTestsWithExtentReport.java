@@ -3,18 +3,24 @@ package api.test;
 import api.endpoints.UserEndPoints;
 import api.payload.User;
 import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.github.javafaker.Faker;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-public class UserTests {
+public class UserTestsWithExtentReport {
 
         Faker faker;
         User userPayload;
+
+
+    ExtentReports extent = new ExtentReports();
+    ExtentSparkReporter spark = new ExtentSparkReporter("extentreportresult.html");
 
         @BeforeClass
         public void setUpData()
@@ -36,6 +42,9 @@ public class UserTests {
         @Test(priority = 1)
         public void testPostUser()
         {
+
+            extent.createTest("testPostUser")
+                    .log(Status.PASS, "This is a logging event for MyFirstTest, and it passed!");
             Response response=UserEndPoints.createUser(userPayload);
             response.then().log().all();
             Assert.assertEquals(response.getStatusCode(),200);
@@ -45,6 +54,8 @@ public class UserTests {
          @Test(priority = 2)
         public void testGetUserByName()
         {
+            extent.createTest("testGetUserByName")
+                    .log(Status.PASS, "This is a logging event for SECOND, and it passed!");
             Response response=UserEndPoints.readUser(this.userPayload.getUsername());
             response.then().log().all();
             Assert.assertEquals(response.getStatusCode(),200);
@@ -54,7 +65,8 @@ public class UserTests {
         @Test(priority = 3)
         public void testUpdateUser()
         {
-
+            extent.createTest("testGetUserByName")
+                    .log(Status.PASS, "This is a logging event for 3, and it passed!");
             userPayload.setUsername(faker.name().username());
         Response response=UserEndPoints.updateUser(userPayload,this.userPayload.getUsername());
         response.then().log().all();
@@ -70,6 +82,9 @@ public class UserTests {
     @Test(priority = 4)
     public void testDeleteUser()
     {
+
+        extent.createTest("testGetUserByName")
+                .log(Status.PASS, "This is a logging event for 4, and it passed!");
         Response response=UserEndPoints.deleteUser(this.userPayload.getUsername());
         response.then().log().all();
         Assert.assertEquals(response.getStatusCode(),200);
@@ -79,9 +94,16 @@ public class UserTests {
     @BeforeTest
     public  void extentReportMethod()
     {
-        ExtentReports extent = new ExtentReports();
-        ExtentSparkReporter spark = new ExtentSparkReporter("extentreportresult.html");
+
         extent.attachReporter(spark);
+    }
+
+
+    @AfterTest
+    public  void extentAfterMethod()
+    {
+
+        extent.flush();
     }
 
 
